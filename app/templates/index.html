@@ -4,41 +4,38 @@
 {% block body %}
 <div class="splash" id="splash" role="status" aria-live="polite">
   <div class="splash-in">
-    <svg class="splash-drive" viewBox="0 0 330 176" aria-hidden="true">
+    <svg class="splash-drive" viewBox="0 0 120 56" aria-hidden="true">
       <defs>
         <radialGradient id="sp-metal" cx="50%" cy="50%" r="50%">
           <stop offset="0.5" stop-color="#F7C566"/>
           <stop offset="1" stop-color="#C8681C"/>
         </radialGradient>
-        <filter id="sp-blur" x="-40%" y="-60%" width="180%" height="220%"><feGaussianBlur stdDeviation="9"/></filter>
       </defs>
-      <ellipse class="sp-heat" cx="172" cy="88" rx="150" ry="62" filter="url(#sp-blur)"/>
-      <g transform="translate(95 88)">
+      <g transform="translate(24 28)">
         <g class="sp-rot sp-rot-big">
-          <circle r="55" fill="url(#sp-metal)"/>
-          <circle r="44" fill="#2A140A"/>
-          <path d="M0 -44V44M-38.1 -22L38.1 22M-38.1 22L38.1 -22" stroke="#E9A23B" stroke-width="7" stroke-linecap="round"/>
-          <circle r="11" fill="#FFD27A"/><circle r="4" fill="#2A140A"/>
+          <circle r="16" fill="url(#sp-metal)"/><circle r="11.5" fill="#2A140A"/>
+          <path d="M0 -11.5V11.5M-10 -5.75L10 5.75M-10 5.75L10 -5.75" stroke="#E9A23B" stroke-width="2.4" stroke-linecap="round"/>
+          <circle r="3.4" fill="#FFD27A"/>
         </g>
       </g>
-      <g transform="translate(245 88)">
+      <g transform="translate(92 28)">
         <g class="sp-rot sp-rot-small">
-          <circle r="29" fill="url(#sp-metal)"/>
-          <circle r="20" fill="#2A140A"/>
-          <path d="M0 -20V20M-17.3 -10L17.3 10M-17.3 10L17.3 -10" stroke="#E9A23B" stroke-width="5" stroke-linecap="round"/>
-          <circle r="6" fill="#FFD27A"/>
+          <circle r="8.6" fill="url(#sp-metal)"/><circle r="5.6" fill="#2A140A"/>
+          <path d="M0 -5.6V5.6M-4.85 -2.8L4.85 2.8M-4.85 2.8L4.85 -2.8" stroke="#E9A23B" stroke-width="1.6" stroke-linecap="round"/>
+          <circle r="1.9" fill="#FFD27A"/>
         </g>
       </g>
-      <!-- open belt on pitch radii 60 and 32, centre distance 150 -->
-      <path class="sp-belt" d="M106.2 29.06 L250.97 56.56 A32 32 0 0 1 250.97 119.44 L106.2 146.94 A60 60 0 1 1 106.2 29.06 Z"/>
-      <path class="sp-tight" d="M106.2 29.06 L250.97 56.56"/>
-      <path class="sp-ribs" pathLength="588" d="M106.2 29.06 L250.97 56.56 A32 32 0 0 1 250.97 119.44 L106.2 146.94 A60 60 0 1 1 106.2 29.06 Z"/>
+      <!-- open belt on pitch radii 18 and 10, centre distance 68 -->
+      <path class="sp-belt" d="M26.12 10.12 L93.18 18.07 A10 10 0 0 1 93.18 37.93 L26.12 45.88 A18 18 0 1 1 26.12 10.12 Z"/>
+      <path class="sp-tight" d="M26.12 10.12 L93.18 18.07"/>
+      <path class="sp-ribs" pathLength="224" d="M26.12 10.12 L93.18 18.07 A10 10 0 0 1 93.18 37.93 L26.12 45.88 A18 18 0 1 1 26.12 10.12 Z"/>
     </svg>
-    <div class="splash-title">Poulies-courroies</div>
-    <div class="splash-msg" id="splash-msg">Préparation des abaques…</div>
+    <div class="splash-text">
+      <div class="splash-title">Poulies-courroies</div>
+      <div class="splash-msg" id="splash-msg">Préparation des abaques…</div>
+    </div>
     <div class="splash-bar" aria-hidden="true"><span id="splash-fill"></span></div>
     <button type="button" class="splash-skip" id="splash-skip" {{ tr("Passer", "Skip") }}</button>
-    <p class="splash-credit" {{ tr("Collaboration de recherche · Ghada Hakiri &amp; Riadh Ayari", "Research collaboration · Ghada Hakiri &amp; Riadh Ayari") }}</p>
   </div>
 </div>
 <noscript><style>.splash{display:none}body.splashing{overflow:auto}</style></noscript>
