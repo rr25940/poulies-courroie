@@ -49,11 +49,23 @@ function build(svg, p, r) {
   const mid = q => [(q[0][0] + q[1][0]) / 2, (q[0][1] + q[1][1]) / 2];
   const rpm = UI.tx('tr/min', 'rpm');
   let g = `<defs><pattern id="mm" width="10" height="10" patternUnits="userSpaceOnUse"><path class="dw-grid" d="M10 0H0V10"/></pattern>
-    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dim-arrow" d="M0 1.5L10 5L0 8.5z"/></marker></defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="dim-arrow" d="M0 1.5L10 5L0 8.5z"/></marker>
+    <radialGradient id="dw-metal" cx="50%" cy="50%" r="50%"><stop offset="0.62" style="stop-color:var(--metal)"/><stop offset="1" style="stop-color:var(--metal-2)"/></radialGradient>
+    <linearGradient id="dw-sheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <filter id="dw-soft" x="-30%" y="-150%" width="160%" height="400%"><feGaussianBlur stdDeviation="4"/></filter></defs>
     <rect width="${W}" height="${H}" fill="url(#mm)"/>`;
+  // soft shadows under the pulleys (static), then the turning pulleys, then a fixed sheen on the solid parts
+  const shadow = (cx, Rp) => `<ellipse class="dw-shadow" cx="${f1(cx)}" cy="${f1(cy + Rp + 9)}" rx="${f1(Rp * 0.8)}" ry="${f1(Math.max(2.5, Rp * 0.07))}" filter="url(#dw-soft)"/>`;
+  const sheen = (cx, Rp) => {
+    const rim = Rp + (timing ? -2.6 : 1.5), r = rim > 34 ? Math.max(7, rim * 0.2) : Math.max(rim, 3);
+    return `<circle class="dw-sheen" cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(r)}" fill="url(#dw-sheen)"/>`;
+  };
+  g += shadow(x1, R) + shadow(x2, rr);
   g += `<g transform="translate(${f2(x1)} ${f2(cy)})">${pulley('rot-big', R, timing ? p.ZD : 0)}</g>`;
   g += `<g transform="translate(${f2(x2)} ${f2(cy)})">${pulley('rot-small', rr, timing ? p.Zd : 0)}</g>`;
+  g += sheen(x1, R) + sheen(x2, rr);
   g += `<line class="belt-glow" x1="${f2(tight[0][0])}" y1="${f2(tight[0][1])}" x2="${f2(tight[1][0])}" y2="${f2(tight[1][1])}" stroke-width="${f1(bw + 10)}"/>`;
+  g += `<path class="belt-edge" d="${path}" stroke-width="${f1(bw + 2.4)}"/>`;
   g += `<path class="belt" d="${path}" stroke-width="${f1(bw)}"/>`;
   g += `<line class="belt-T" x1="${f2(tight[0][0])}" y1="${f2(tight[0][1])}" x2="${f2(tight[1][0])}" y2="${f2(tight[1][1])}" stroke-width="${f1(bw)}"/>`;
   const dash = timing ? `${f2(tp * 0.45)} ${f2(tp * 0.55)}` : '2 11';

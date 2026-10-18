@@ -46,6 +46,7 @@ async function compute() {
     const r = await resp.json();
     if (mode === st.mode) paint(r);
   } catch (e) {
+    if (splash) splash.fail();
     $('#result').innerHTML = `<p class="offline">${UI.tx('Le serveur ne répond pas. Vérifiez que le conteneur tourne, puis modifiez une valeur pour réessayer.', 'The server is not responding. Check that the container is running, then change a value to retry.')}</p>`;
   } finally {
     clearTimeout(timer); busy.classList.remove('on'); inflight = false;
@@ -53,6 +54,45 @@ async function compute() {
   }
 }
 function update() { save(); compute(); }
+
+/* ---------- loading screen: warm 10-second intro when the app opens ----------
+   Plays in full on the first load of a session (each time the app is launched); a reload in the
+   same session gets a short one. It never hides before the first result, so on a free server that
+   is still waking up it stays on screen and says so. */
+const INTRO_MS = 10000;
+let splash = null;
+function startSplash() {
+  const el = $('#splash');
+  if (!el) return null;
+  let intro = INTRO_MS;
+  try { if (sessionStorage.getItem('pc-intro')) intro = 900; sessionStorage.setItem('pc-intro', '1'); } catch (e) { /* storage blocked: full intro */ }
+  if (reduced()) intro = 0;
+  const t0 = performance.now(), msg = $('#splash-msg'), fill = $('#splash-fill');
+  const lines = () => UI.tx(
+    ['Lecture du tableau des facteurs de service…', 'Tracé du graphe 1…', 'Choix des diamètres primitifs…', 'Calcul de l’entraxe…', 'Interpolation dans le tableau 4…', 'Lecture de Kθ et de KL…', 'Mise en tension des brins…'],
+    ['Reading the service factor table…', 'Plotting chart 1…', 'Choosing the pitch diameters…', 'Working out the centre distance…', 'Interpolating in table 4…', 'Reading Kθ and KL…', 'Tensioning the belt…']);
+  let ready = false, done = false, k = 0;
+  const say = () => {
+    if (!ready && performance.now() - t0 > intro) msg.textContent = UI.tx('Le serveur se réveille, encore quelques secondes…', 'The server is waking up, a few more seconds…');
+    else { const l = lines(); msg.textContent = l[k++ % l.length]; }
+  };
+  say();
+  const timer = setInterval(say, 1400);
+  fill.style.transitionDuration = intro + 'ms';
+  void fill.offsetWidth;
+  fill.style.width = '100%';
+  const hide = () => {
+    if (done) return;
+    done = true; clearInterval(timer);
+    el.classList.add('out');
+    document.body.classList.remove('splashing');
+    setTimeout(() => el.remove(), 800);
+    if (!reduced()) $$(`#steps-${st.mode} .step, .bench`).forEach(s => { s.classList.remove('enter'); void s.offsetWidth; s.classList.add('enter'); });
+  };
+  const check = () => { const left = intro - (performance.now() - t0); if (left <= 0) hide(); else setTimeout(check, left); };
+  $('#splash-skip').addEventListener('click', hide);
+  return { ready() { if (!ready) { ready = true; check(); } }, fail: hide };
+}
 
 /* ---------- painting ---------- */
 function snapshot() {
@@ -89,6 +129,7 @@ function paint(r) {
   }
   firstPaint = false;
   quiet = false;
+  if (splash) splash.ready();
 }
 
 /* ---------- inputs ---------- */
@@ -178,6 +219,6 @@ function observeSteps() {
 let rz = 0;
 root.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (lastResult) { quiet = true; paint(lastResult); } }, 150); });
 if (reduced()) UI.anim.on = false;
-syncInputs(); applyLang(); applyMode(false); compute();
+syncInputs(); applyLang(); applyMode(false); splash = startSplash(); compute();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (lastResult) { quiet = true; paint(lastResult); } });
 })(window);

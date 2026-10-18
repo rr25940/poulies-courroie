@@ -1,4 +1,7 @@
-const CACHE_NAME = "poulies-courroies-shell-v2";
+const CACHE_NAME = "poulies-courroies-shell-v3";
+// Free hosting sleeps when idle: after this delay a page is served from the cache, and the
+// loading screen covers the server's wake-up while the network copy refreshes the cache.
+const PAGE_TIMEOUT_MS = 3000;
 const SHELL = [
   "/",
   "/privacy",
@@ -34,11 +37,22 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin || url.pathname.startsWith("/api/")) return;
 
-  event.respondWith(
-    fetch(event.request).then((response) => {
+  const network = fetch(event.request).then((response) => {
+    if (response.ok) {
       const copy = response.clone();
       caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-      return response;
-    }).catch(() => caches.match(event.request).then((cached) => cached || caches.match("/")))
+    }
+    return response;
+  });
+  const fromCache = () => caches.match(event.request).then((cached) => cached || caches.match("/"));
+  const first = event.request.mode === "navigate"
+    ? Promise.race([network, new Promise((resolve) => setTimeout(resolve, PAGE_TIMEOUT_MS))])
+    : network;
+
+  event.respondWith(
+    first
+      .then((response) => response || caches.match(event.request).then((cached) => cached || network))
+      .catch(fromCache)
   );
+  event.waitUntil(network.catch(() => {}));
 });

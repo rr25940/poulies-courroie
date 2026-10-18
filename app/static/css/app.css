@@ -28,8 +28,48 @@
   color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
+
+/* ---------- loading screen: a deliberately warm, single-look intro (copper, amber, ember) ---------- */
+body.splashing{overflow:hidden}
+.splash{position:fixed;inset:0;z-index:100;display:grid;place-items:center;
+  padding:max(24px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  background:radial-gradient(circle at 50% 38%,#4A2410 0%,#24120A 52%,#130A05 100%);color:#FFF1DC;
+  transition:opacity .7s var(--ease),visibility 0s linear .7s}
+.splash::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(#ffb36a12 1px,transparent 1px),linear-gradient(90deg,#ffb36a12 1px,transparent 1px);background-size:22px 22px}
+.splash.out{opacity:0;visibility:hidden}
+.splash-in{position:relative;width:min(420px,100%);display:grid;justify-items:center;gap:14px;text-align:center;transition:transform .7s var(--ease)}
+.splash.out .splash-in{transform:scale(1.05)}
+.splash-drive{width:min(330px,88vw);height:auto;overflow:visible}
+.sp-heat{fill:#FF7A2E;opacity:.22;animation:heat 2.4s ease-in-out infinite alternate}
+@keyframes heat{from{opacity:.12}to{opacity:.3}}
+.sp-rot-big{animation:spin 3.23s linear infinite}
+.sp-rot-small{animation:spin 1.72s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sp-belt{fill:none;stroke:#6B2A10;stroke-width:9;stroke-linejoin:round}
+.sp-tight{fill:none;stroke:#FF7A2E;stroke-width:9;animation:ember 1.2s ease-in-out infinite alternate}
+@keyframes ember{from{opacity:.35}to{opacity:.85}}
+.sp-ribs{fill:none;stroke:#FFD98A;stroke-width:4;stroke-dasharray:5 9;animation:crawl 1.2s linear infinite}
+@keyframes crawl{to{stroke-dashoffset:-140}}
+.splash-title{font-family:var(--f-display);font-stretch:70%;font-weight:800;font-size:clamp(38px,9vw,52px);line-height:1;
+  background:linear-gradient(100deg,#FFF1DC 38%,#FFC35A 50%,#FFF1DC 62%) 0 0/260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shine 3s linear infinite}
+@keyframes shine{from{background-position:100% 0}to{background-position:-60% 0}}
+.splash-msg{min-height:1.5em;font:500 13.5px var(--f-mono);color:#F3C58A}
+.splash-bar{width:min(300px,80vw);height:12px;border-radius:6px;background:#3A2213;overflow:hidden;box-shadow:inset 0 0 0 1px #5A3520}
+.splash-bar span{display:block;width:0;height:100%;border-radius:6px;transition-property:width;transition-timing-function:linear;
+  background:repeating-linear-gradient(-45deg,#ffffff30 0 8px,transparent 8px 16px) 0 0/22.627px 22.627px,linear-gradient(90deg,#F2B33D,#F07A2A 55%,#D8401E);
+  animation:stripes .6s linear infinite}
+@keyframes stripes{to{background-position:22.627px 0,0 0}}
+.splash-skip{margin-top:4px;border:1px solid #6B4128;background:transparent;color:#F3C58A;border-radius:6px;padding:6px 14px;font:500 12.5px var(--f-mono);cursor:pointer}
+.splash-skip:hover{border-color:#F3C58A}
+.splash-credit{margin:6px 0 0;font-size:12.5px;color:#C99B6E}
 html{scroll-padding-top:calc(var(--bar-h) + 16px)}
-body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 var(--f-body);-webkit-font-smoothing:antialiased}
+body{margin:0;background-color:var(--paper);color:var(--ink);font:15px/1.5 var(--f-body);-webkit-font-smoothing:antialiased;
+  /* faint drafting-paper grid */
+  background-image:linear-gradient(color-mix(in srgb,var(--grid) 70%,transparent) 1px,transparent 1px),
+                   linear-gradient(90deg,color-mix(in srgb,var(--grid) 70%,transparent) 1px,transparent 1px);
+  background-size:24px 24px}
 button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 sub{font-size:.72em;line-height:0}
@@ -101,7 +141,9 @@ h1{margin:0;font-family:var(--f-display);font-stretch:72%;font-weight:780;font-s
 
 /* ---------- steps ---------- */
 .step{background:var(--sheet);border:1px solid var(--rule);border-radius:8px;min-width:0;transition:border-color .3s,box-shadow .3s}
+.step:hover{border-color:color-mix(in srgb,var(--ink-2) 45%,var(--rule));box-shadow:0 10px 24px -18px color-mix(in srgb,var(--ink) 60%,transparent)}
 .step.enter{animation:enter .45s var(--ease) both;animation-delay:calc(var(--i) * 35ms)}
+.bench.enter{animation:enter .55s var(--ease) both}
 @keyframes enter{from{opacity:.25;transform:translateY(10px)}to{opacity:1;transform:none}}
 .step-h{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px dashed var(--rule)}
 .step-n{position:relative;display:grid;place-items:center;width:28px;height:28px;flex:none;border:1.5px solid var(--accent);color:var(--accent);border-radius:4px;font:600 13px var(--f-mono);transition:background .3s,color .3s,border-color .3s}
@@ -221,6 +263,11 @@ table.t{border-collapse:collapse;font:13px var(--f-mono);font-variant-numeric:ta
 .p-mark{stroke:var(--accent);stroke-width:2.2;stroke-linecap:round}
 .p-teeth{fill:none;stroke:var(--metal-2)}
 .belt{fill:none;stroke:var(--belt);stroke-linejoin:round}
+.belt-edge{fill:none;stroke:var(--ink);opacity:.35;stroke-linejoin:round}
+.dw-shadow{fill:var(--ink);opacity:.14}
+.dw-sheen{pointer-events:none}
+.p-disc{fill:url(#dw-metal)}
+.p-ring{stroke:url(#dw-metal)}
 .belt-T{stroke:var(--accent);stroke-linecap:butt}
 .belt-glow{stroke:var(--accent);opacity:.18;stroke-linecap:round;animation:tension 1.6s ease-in-out infinite alternate}
 @keyframes tension{from{opacity:.06}to{opacity:.26}}
