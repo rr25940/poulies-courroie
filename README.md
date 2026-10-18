@@ -5,6 +5,8 @@ Interactive sizing of classic V-belts and timing belts, following the course
 through a JSON API. The browser draws the course charts and the animated drive
 to scale.
 
+Created as part of a research collaboration between **Ghada Hakiri** and **Riadh Ayari**.
+
 ## Layout
 
 ```

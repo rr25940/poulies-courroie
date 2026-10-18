@@ -50,6 +50,8 @@ Pour apprendre et vérifier
 • Interface en français et en anglais
 
 Aucun compte, aucune publicité, aucune donnée personnelle collectée.
+
+Réalisé dans le cadre d'une collaboration de recherche entre Ghada Hakiri et Riadh Ayari.
 ```
 
 ## Store listing — English (add translation: en-US)
@@ -85,6 +87,8 @@ Learn and check
 • French and English interface
 
 No account, no ads, no personal data collected.
+
+Created as part of a research collaboration between Ghada Hakiri and Riadh Ayari.
 ```
 
 ## Store settings
