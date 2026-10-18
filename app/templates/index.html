@@ -4,37 +4,39 @@
 {% block body %}
 <div class="splash" id="splash" role="status" aria-live="polite">
   <div class="splash-in">
-    <svg class="splash-drive" viewBox="0 0 120 56" aria-hidden="true">
+    <!-- a small inchworm crawling along the progress line; the path is redrawn every frame by app.js -->
+    <svg class="worm" id="worm" viewBox="0 0 260 64" aria-hidden="true">
       <defs>
-        <radialGradient id="sp-metal" cx="50%" cy="50%" r="50%">
-          <stop offset="0.5" stop-color="#F7C566"/>
-          <stop offset="1" stop-color="#C8681C"/>
-        </radialGradient>
+        <linearGradient id="worm-g" gradientUnits="userSpaceOnUse" x1="0" y1="26" x2="0" y2="54">
+          <stop offset="0" stop-color="#A6DA5E"/>
+          <stop offset="1" stop-color="#5E9A2B"/>
+        </linearGradient>
+        <filter id="worm-fuzz" filterUnits="userSpaceOnUse" x="0" y="0" width="260" height="64">
+          <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="1" seed="4" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
       </defs>
-      <g transform="translate(24 28)">
-        <g class="sp-rot sp-rot-big">
-          <circle r="16" fill="url(#sp-metal)"/><circle r="11.5" fill="#2A140A"/>
-          <path d="M0 -11.5V11.5M-10 -5.75L10 5.75M-10 5.75L10 -5.75" stroke="#E9A23B" stroke-width="2.4" stroke-linecap="round"/>
-          <circle r="3.4" fill="#FFD27A"/>
-        </g>
+      <line class="worm-ground" x1="12" y1="54" x2="248" y2="54"/>
+      <line class="worm-trail" id="worm-trail" x1="12" y1="54" x2="12" y2="54"/>
+      <ellipse class="worm-shadow" id="worm-shadow" cx="43" cy="55" rx="31" ry="2.2"/>
+      <g filter="url(#worm-fuzz)">
+        <path class="worm-outline" id="worm-o" d="M12 47.5 L74 47.5"/>
+        <path class="worm-body" id="worm-b" d="M12 47.5 L74 47.5"/>
+        <path class="worm-shine" id="worm-s" pathLength="100" d="M12 44.5 L74 44.5"/>
       </g>
-      <g transform="translate(92 28)">
-        <g class="sp-rot sp-rot-small">
-          <circle r="8.6" fill="url(#sp-metal)"/><circle r="5.6" fill="#2A140A"/>
-          <path d="M0 -5.6V5.6M-4.85 -2.8L4.85 2.8M-4.85 2.8L4.85 -2.8" stroke="#E9A23B" stroke-width="1.6" stroke-linecap="round"/>
-          <circle r="1.9" fill="#FFD27A"/>
+      <g id="worm-face" transform="translate(74 47.5)">
+        <circle class="worm-head" cx="1" cy="-1.5" r="7.4"/>
+        <g class="worm-eyes">
+          <ellipse class="worm-eye" cx="-2.2" cy="-10" rx="3.7" ry="4.7"/>
+          <ellipse class="worm-eye" cx="4.6" cy="-9.4" rx="3.4" ry="4.4"/>
+          <circle class="worm-pupil" cx="-1" cy="-10.6" r="1.7"/>
+          <circle class="worm-pupil" cx="5.7" cy="-10" r="1.6"/>
         </g>
+        <path class="worm-smile" d="M2.2 0.6 q2.6 1.9 5.2 -0.2"/>
       </g>
-      <!-- open belt on pitch radii 18 and 10, centre distance 68 -->
-      <path class="sp-belt" d="M26.12 10.12 L93.18 18.07 A10 10 0 0 1 93.18 37.93 L26.12 45.88 A18 18 0 1 1 26.12 10.12 Z"/>
-      <path class="sp-tight" d="M26.12 10.12 L93.18 18.07"/>
-      <path class="sp-ribs" pathLength="224" d="M26.12 10.12 L93.18 18.07 A10 10 0 0 1 93.18 37.93 L26.12 45.88 A18 18 0 1 1 26.12 10.12 Z"/>
     </svg>
-    <div class="splash-text">
-      <div class="splash-title">Poulies-courroies</div>
-      <div class="splash-msg" id="splash-msg">Préparation des abaques…</div>
-    </div>
-    <div class="splash-bar" aria-hidden="true"><span id="splash-fill"></span></div>
+    <div class="splash-title">Poulies-courroies</div>
+    <div class="splash-msg" id="splash-msg">Préparation des abaques…</div>
     <button type="button" class="splash-skip" id="splash-skip" {{ tr("Passer", "Skip") }}</button>
   </div>
 </div>

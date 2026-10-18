@@ -61,13 +61,44 @@ function update() { save(); compute(); }
    is still waking up it stays on screen and says so. */
 const INTRO_MS = 10000;
 let splash = null;
+
+/* Inchworm gait along the progress line: each step the body arches (tail catches up),
+   then stretches (head reaches forward). The step length is chosen so the head reaches
+   the end of the line when the intro ends; the green trail behind it is the progress. */
+function startWorm(intro) {
+  const svg = $('#worm');
+  if (!svg) return { stop() {} };
+  const body = ['#worm-o', '#worm-b'].map(s => $(s)), shine = $('#worm-s'), face = $('#worm-face'), trail = $('#worm-trail'), shadow = $('#worm-shadow');
+  const X0 = 12, X1 = 248, BASE = 47.5, L = 62, CYCLE = 0.9, span = X1 - X0 - L;
+  const D = Math.min(18, Math.max(8, span / Math.max(1, intro / 1000 / CYCLE)));
+  const ease = t => t * t * (3 - 2 * t), r1 = v => v.toFixed(1);
+  const t0 = performance.now();
+  let raf = 0;
+  const draw = now => {
+    const cyc = (now - t0) / 1000 / CYCLE, n = Math.floor(cyc), f = cyc - n;
+    const T = X0 + ((n * D) % span);  // tail position at the start of this step (wraps if the server is slow)
+    const xt = f < 0.5 ? T + D * ease(f / 0.5) : T + D;
+    const xh = f < 0.5 ? T + L : T + L + D * ease((f - 0.5) / 0.5);
+    const c = xh - xt, A = Math.sqrt(Math.max(0, (L / 2) ** 2 - (c / 2) ** 2)) * 1.33;
+    const curve = (y0) => `M${r1(xt)} ${y0} C${r1(xt + c * 0.2)} ${r1(y0 - A)} ${r1(xh - c * 0.2)} ${r1(y0 - A)} ${r1(xh)} ${y0}`;
+    body.forEach(p => p.setAttribute('d', curve(BASE)));
+    shine.setAttribute('d', curve(BASE - 3));
+    face.setAttribute('transform', `translate(${r1(xh)} ${BASE})`);
+    trail.setAttribute('x2', r1(xt));
+    shadow.setAttribute('cx', r1((xt + xh) / 2)); shadow.setAttribute('rx', r1(c / 2));
+  };
+  if (reduced()) { draw(t0 + CYCLE * 250); return { stop() {} }; }  // one still, arched pose
+  const loop = now => { draw(now); raf = requestAnimationFrame(loop); };
+  raf = requestAnimationFrame(loop);
+  return { stop() { cancelAnimationFrame(raf); } };
+}
 function startSplash() {
   const el = $('#splash');
   if (!el) return null;
   let intro = INTRO_MS;
   try { if (sessionStorage.getItem('pc-intro')) intro = 900; sessionStorage.setItem('pc-intro', '1'); } catch (e) { /* storage blocked: full intro */ }
   if (reduced()) intro = 0;
-  const t0 = performance.now(), msg = $('#splash-msg'), fill = $('#splash-fill');
+  const t0 = performance.now(), msg = $('#splash-msg'), worm = startWorm(intro);
   const lines = () => UI.tx(
     ['Lecture du tableau des facteurs de service…', 'Tracé du graphe 1…', 'Choix des diamètres primitifs…', 'Calcul de l’entraxe…', 'Interpolation dans le tableau 4…', 'Lecture de Kθ et de KL…', 'Mise en tension des brins…'],
     ['Reading the service factor table…', 'Plotting chart 1…', 'Choosing the pitch diameters…', 'Working out the centre distance…', 'Interpolating in table 4…', 'Reading Kθ and KL…', 'Tensioning the belt…']);
@@ -78,12 +109,9 @@ function startSplash() {
   };
   say();
   const timer = setInterval(say, 1400);
-  fill.style.transitionDuration = intro + 'ms';
-  void fill.offsetWidth;
-  fill.style.width = '100%';
   const hide = () => {
     if (done) return;
-    done = true; clearInterval(timer);
+    done = true; clearInterval(timer); worm.stop();
     el.classList.add('out');
     document.body.classList.remove('splashing');
     setTimeout(() => el.remove(), 800);
