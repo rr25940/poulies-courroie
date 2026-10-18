@@ -27,7 +27,8 @@ android {
         versionCode((project.findProperty("versionCode") ?: "1").toString().toInteger())
         versionName((project.findProperty("versionName") ?: "1.0.0").toString())
         manifestPlaceholders = [hostName: webUri.host]
-        resValue "string", "launch_url", webAppUrl
+        // ?source=twa tells the site it runs inside the Play app (donation letter hidden there)
+        resValue "string", "launch_url", webAppUrl + "?source=twa"
     }
 
     signingConfigs {

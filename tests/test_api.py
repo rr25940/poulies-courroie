@@ -17,6 +17,7 @@ def test_index_renders_both_tabs(client):
     assert 'id="steps-v"' in html and 'id="steps-t"' in html
     assert "Ghada Hakiri" in html and "Riadh Ayari" in html
     assert 'id="splash"' in html and 'class="splashing"' in html
+    assert 'id="don"' in html and "mailto:riiadh444@gmail.com" in html
     assert "Content-Security-Policy" in resp.headers
 
 

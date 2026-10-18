@@ -31,6 +31,11 @@ try {
 const qp = new URLSearchParams(location.search);  // ?mode=t&lang=en for direct links
 if (qp.get('mode') === 'v' || qp.get('mode') === 't') st.mode = qp.get('mode');
 if (qp.get('lang') === 'fr' || qp.get('lang') === 'en') st.lang = qp.get('lang');
+// The Google Play app opens the site with ?source=twa. There, the donation letter is hidden:
+// Google Play's payments policy restricts asking for money outside Play billing.
+let inApp = qp.get('source') === 'twa' || document.referrer.startsWith('android-app://');
+try { if (inApp) sessionStorage.setItem('pc-twa', '1'); else inApp = sessionStorage.getItem('pc-twa') === '1'; } catch (e) { /* storage blocked */ }
+if (inApp) document.documentElement.classList.add('in-app');
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { /* ignored */ } };
 const clr = (m, keys) => keys.forEach(k => { st[m][k] = null; });
 
@@ -194,6 +199,7 @@ document.addEventListener('click', e => {
     case 'lang': st.lang = val; applyLang(); quiet = true; save(); if (lastResult) paint(lastResult); return;
     case 'reset': st[m] = clone(DEF[m]); syncInputs(); break;
     case 'play': UI.anim.on = !UI.anim.on; setPlay(); return;
+    case 'copy-email': copyEmail(b); return;
     case 'speed': UI.anim.mult = +val; if (!UI.anim.on) UI.anim.on = true; setPlay(); return;
     case 'driver': st[m].driver = val; break;
     case 'ks': st[m].ks = val.split(',').map(Number); break;
@@ -207,6 +213,18 @@ document.addEventListener('click', e => {
   }
   update();
 });
+function copyEmail(btn) {
+  const done = () => {
+    btn.textContent = UI.tx('Adresse copiée ✓', 'Address copied ✓');
+    setTimeout(() => { btn.innerHTML = btn.dataset[LNG] ?? btn.dataset.fr; }, 1800);
+  };
+  const select = () => {  // fallback: select the address so it can be copied by hand
+    const r = document.createRange(); r.selectNodeContents($('#mail-addr'));
+    const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(btn.dataset.addr).then(done, select);
+  else select();
+}
 function bindNum(id, m, key, after) {
   $('#' + id).addEventListener('input', e => {
     const raw = e.target.value;

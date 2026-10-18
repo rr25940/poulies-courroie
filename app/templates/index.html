@@ -64,7 +64,7 @@
 </header>
 
 <div class="wrap">
-<p class="lede" {{ tr("La démarche de calcul du cours, étape par étape. Changez une donnée ou un choix : le serveur refait le calcul et tout se met à jour, du dessin à l'échelle jusqu'au nombre de courroies.", "The course's sizing method, step by step. Change any input or choice: the server recomputes and everything updates, from the scale drawing to the number of belts.") }}</p>
+<p class="lede" {{ tr("La démarche de calcul du cours, étape par étape. Changez une donnée ou un choix : le serveur refait le calcul et tout se met à jour, du dessin à l'échelle jusqu'au nombre de courroies. <a class='donate-link' href='#don'>Soutenir le projet ♥</a>", "The course's sizing method, step by step. Change any input or choice: the server recomputes and everything updates, from the scale drawing to the number of belts. <a class='donate-link' href='#don'>Support the project ♥</a>") }}</p>
 
 <main class="layout">
 <nav class="rail" aria-label="Étapes">
@@ -178,6 +178,31 @@
   </div>
 </aside>
 </main>
+
+<!-- Donation letter: website only. Hidden inside the Google Play app (Play payments policy), see app.js. -->
+<section class="donate" id="don" aria-labelledby="don-title">
+  <div class="letter">
+    <svg class="letter-worm" viewBox="0 0 64 36" aria-hidden="true">
+      <path d="M4 33 C10 33 12 14 26 14 S40 30 46 24" fill="none" stroke="#4C7F22" stroke-width="9" stroke-linecap="round"/>
+      <path d="M4 33 C10 33 12 14 26 14 S40 30 46 24" fill="none" stroke="#86C440" stroke-width="6.6" stroke-linecap="round"/>
+      <circle cx="48" cy="21" r="7" fill="#86C440" stroke="#4C7F22" stroke-width="1.2"/>
+      <g class="worm-eyes">
+        <ellipse cx="46" cy="14" rx="3.2" ry="4" fill="#FFFDF6" stroke="#2B2B2B" stroke-width=".7"/>
+        <ellipse cx="52.4" cy="14.6" rx="3" ry="3.8" fill="#FFFDF6" stroke="#2B2B2B" stroke-width=".7"/>
+        <circle cx="46.6" cy="13.4" r="1.4" fill="#161616"/><circle cx="53" cy="14" r="1.3" fill="#161616"/>
+      </g>
+      <path d="M47.5 23.6 q2.4 1.8 4.8 0" fill="none" stroke="#2F4F14" stroke-width="1" stroke-linecap="round"/>
+    </svg>
+    <span class="eyebrow" {{ tr("Lettre aux utilisateurs", "A letter to our users") }}</span>
+    <h2 id="don-title" {{ tr("Soutenir Poulies-courroies", "Support Poulies-courroies") }}</h2>
+    <div class="letter-body" {{ tr("<p>Chère utilisatrice, cher utilisateur,</p><p>Poulies-courroies est gratuit, sans publicité, et ne collecte aucune donnée. Il est né d'une collaboration de recherche entre Ghada Hakiri et Riadh Ayari, pour aider étudiants et techniciens à dimensionner leurs transmissions pas à pas.</p><p>Si cet outil vous est utile, un don aide à payer l'hébergement et à continuer de l'améliorer. Écrivez-moi à l'adresse ci-dessous : je vous répondrai avec les modalités de don.</p><p class='sign'>Merci pour votre soutien,<br>Riadh Ayari</p>", "<p>Dear user,</p><p>Poulies-courroies is free, has no ads and collects no data. It grew out of a research collaboration between Ghada Hakiri and Riadh Ayari, to help students and technicians size their belt drives step by step.</p><p>If this tool is useful to you, a donation helps pay for hosting and keep improving it. Write to me at the address below and I will reply with how to donate.</p><p class='sign'>Thank you for your support,<br>Riadh Ayari</p>") }}</div>
+    <div class="letter-mail">
+      <span class="mail-addr" id="mail-addr">riiadh444@gmail.com</span>
+      <a class="mail-btn" href="mailto:riiadh444@gmail.com?subject=Don%20-%20Poulies-courroies" {{ tr("Écrire pour faire un don", "Write to donate") }}</a>
+      <button type="button" class="ghost" data-act="copy-email" data-addr="riiadh444@gmail.com" {{ tr("Copier l'adresse", "Copy address") }}</button>
+    </div>
+  </div>
+</section>
 
 <p class="credit" {{ tr("Site réalisé dans le cadre d'une collaboration de recherche entre <b>Ghada Hakiri</b> et <b>Riadh Ayari</b>.", "Created as part of a research collaboration between <b>Ghada Hakiri</b> and <b>Riadh Ayari</b>.") }}</p>
 <footer class="foot" {{ tr("Tableaux et courbes relevés sur le cours « Système poulies et courroies » (Fig18 à Fig32, NF ISO 4183, 4184, 5294, 5296). La lecture des graphes est précise à quelques % près, comme une lecture à la main. Deux cases floues du tableau 4 ont été lues par cohérence avec leurs voisines : 3,59 kW (A, 100 mm, 20 m/s) et 9,85 kW (B, 250 mm, 25 m/s). La masse linéique <i>m′</i> proposée est une valeur catalogue typique, absente du cours.", "Tables and curves are read from the course “Système poulies et courroies” (Fig18 to Fig32, NF ISO 4183, 4184, 5294, 5296). Chart readings are accurate to a few percent, like reading them by hand. Two blurry cells in table 4 were read to match their neighbours: 3.59 kW (A, 100 mm, 20 m/s) and 9.85 kW (B, 250 mm, 25 m/s). The suggested mass per length <i>m′</i> is a typical catalogue value; the course does not give one.") }}</footer>
