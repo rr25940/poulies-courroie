@@ -1,0 +1,48 @@
+<!doctype html>
+<!-- Google Play feature graphic, 1024 × 500. ?lang=en for the English version. -->
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400&display=swap">
+<style>
+  html,body{margin:0;width:1024px;height:500px;overflow:hidden}
+  body{background:#16201D;color:#ECF0EE;font-family:"IBM Plex Sans",sans-serif;position:relative;
+       background-image:linear-gradient(#ffffff0a 1px,transparent 1px),linear-gradient(90deg,#ffffff0a 1px,transparent 1px);background-size:20px 20px}
+  .txt{position:absolute;left:64px;top:96px;width:470px;display:grid;gap:18px}
+  .eb{font:500 15px "IBM Plex Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:#9AA7A3}
+  h1{margin:0;font-family:"Archivo",sans-serif;font-stretch:70%;font-weight:800;font-size:92px;line-height:.9}
+  p{margin:0;font-size:25px;line-height:1.35;color:#C3CCC8}
+  .chips{display:flex;gap:10px;margin-top:6px}
+  .chips span{font:500 15px "IBM Plex Mono",monospace;padding:6px 10px;border:1.5px solid #3A4643;border-radius:6px;color:#ECF0EE}
+  svg{position:absolute;right:28px;top:70px}
+</style>
+<div class="txt">
+  <div class="eb" id="eb">Transmission de puissance</div>
+  <h1>Poulies-<br>courroies</h1>
+  <p id="sub">Dimensionnez vos courroies pas à pas, avec les abaques du cours.</p>
+  <div class="chips"><span>Z · A · B · C</span><span>XL · L · H</span><span>FR · EN</span></div>
+</div>
+<svg width="470" height="360" viewBox="0 0 470 360">
+  <g fill="none" stroke-linecap="round">
+    <line x1="0" y1="180" x2="470" y2="180" stroke="#3A4643" stroke-width="1.2" stroke-dasharray="14 4 3 4"/>
+    <!-- open belt: tangent points for R = 146, r = 76, centre distance 238 -->
+    <path d="M192.9 40.4 L410.3 107.3" stroke="#B5381D" stroke-width="18" opacity=".22"/>
+    <path d="M192.9 40.4 L410.3 107.3" stroke="#B5381D" stroke-width="9"/>
+    <path d="M410.3 252.7 L192.9 319.6" stroke="#C3CCC8" stroke-width="9"/>
+    <path d="M410.3 107.3 A76 76 0 0 1 410.3 252.7" stroke="#C3CCC8" stroke-width="9"/>
+    <path d="M192.9 319.6 A146 146 0 1 1 192.9 40.4" stroke="#C3CCC8" stroke-width="9"/>
+    <circle cx="150" cy="180" r="134" stroke="#62706B" stroke-width="16"/>
+    <circle cx="150" cy="180" r="126" stroke="#9AA7A3" stroke-width="1.5"/>
+    <g stroke="#62706B" stroke-width="13">
+      <path d="M150 180 L150 70 M150 180 L245 235 M150 180 L55 235 M150 180 L150 290 M150 180 L245 125 M150 180 L55 125"/>
+    </g>
+    <circle cx="388" cy="180" r="64" stroke="#62706B" stroke-width="12"/>
+    <path d="M388 180 L388 132 M388 180 L429 204 M388 180 L347 204" stroke="#62706B" stroke-width="8"/>
+  </g>
+  <circle cx="150" cy="180" r="22" fill="#F2C94C"/>
+  <circle cx="388" cy="180" r="12" fill="#F2C94C"/>
+</svg>
+<script>
+  if (new URLSearchParams(location.search).get('lang') === 'en') {
+    document.getElementById('eb').textContent = 'Power transmission';
+    document.getElementById('sub').textContent = 'Size your belt drives step by step, using the course charts.';
+  }
+</script>

@@ -1,0 +1,41 @@
+{# tr(): bilingual text. Prints the attributes and the French content, and closes the opening tag. #}
+{% macro tr(fr, en) -%}
+data-fr="{{ fr }}" data-en="{{ en }}">{{ fr|safe }}
+{%- endmacro %}
+
+{% macro step(mode, n, fr, en, ref_fr, ref_en) -%}
+<article class="step" id="{{ mode }}-s{{ n }}" data-step="{{ n }}" style="--i:{{ n }}">
+  <header class="step-h">
+    <span class="step-n" id="{{ mode }}-n{{ n }}"><span>{{ n }}</span></span>
+    <h2 {{ tr(fr, en) }}</h2>
+    <span class="step-ref" {{ tr(ref_fr, ref_en) }}</span>
+  </header>
+  <div class="step-b">{{ caller() }}</div>
+</article>
+{%- endmacro %}
+
+{% macro num(id, fr, en, unit='', attrs='') -%}
+<label class="field"><span {{ tr(fr, en) }}</span><span class="inp"><input id="{{ id }}" type="number" {{ attrs|safe }}>{% if unit %}<em>{{ unit|safe }}</em>{% endif %}</span></label>
+{%- endmacro %}
+
+{% macro inputs(m) -%}
+<div class="fields">
+  {{ num(m ~ '-P', 'Puissance à transmettre <i>P</i>', 'Power to transmit <i>P</i>', 'kW', 'inputmode="decimal" min="0.05" step="0.1"') }}
+  <label class="field"><span {{ tr('Vitesse petite poulie <i>N</i><sub>d</sub>', 'Small pulley speed <i>N</i><sub>d</sub>') }}</span><span class="inp"><input id="{{ m }}-Nd" type="number" inputmode="numeric" min="1" step="10"><em {{ tr('tr/min', 'rpm') }}</em></span></label>
+  <label class="field"><span {{ tr('Vitesse grande poulie <i>N</i><sub>D</sub>', 'Large pulley speed <i>N</i><sub>D</sub>') }}</span><span class="inp"><input id="{{ m }}-ND" type="number" inputmode="numeric" min="1" step="10"><em {{ tr('tr/min', 'rpm') }}</em></span></label>
+</div>
+<div class="ctl"><span class="lbl" {{ tr('Poulie motrice', 'Driving pulley') }}</span><div class="seg" id="{{ m }}-driver"></div></div>
+<div id="{{ m }}-o1" class="out"></div>
+{%- endmacro %}
+
+{% macro centre(m, len_fr, len_en) -%}
+<div id="{{ m }}-o5a" class="out"></div>
+<div class="ctl">
+  <label class="lbl" for="{{ m }}-a" {{ tr('Entraxe visé <i>a</i>', 'Target centre distance <i>a</i>') }}</label>
+  <input type="range" id="{{ m }}-a">
+  <span class="inp sm"><input id="{{ m }}-an" type="number" inputmode="numeric" aria-label="a (mm)"><em>mm</em></span>
+  <button type="button" class="ghost" data-act="aauto" {{ tr('Auto', 'Auto') }}</button>
+</div>
+<div class="ctl"><label class="lbl" for="{{ m }}-{{ 'Lp' if m == 'v' else 'Zc' }}" {{ tr(len_fr, len_en) }}</label><select id="{{ m }}-{{ 'Lp' if m == 'v' else 'Zc' }}"></select></div>
+<div id="{{ m }}-o5" class="out"></div>
+{%- endmacro %}

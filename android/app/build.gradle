@@ -1,0 +1,61 @@
+plugins {
+    id "com.android.application"
+}
+
+// The website the app opens. Pass it at build time: -PwebAppUrl=https://your-site/
+def webAppUrl = (project.findProperty("webAppUrl") ?: "https://YOUR-RENDER-SERVICE.onrender.com/").toString()
+def webUri = new URI(webAppUrl)
+if (webUri.scheme != "https" || !webUri.host) {
+    throw new GradleException("webAppUrl must be a full https:// address, got: ${webAppUrl}")
+}
+
+// Upload key created by build-aab.ps1. keystore.properties and the .jks file are never committed.
+def keystoreFile = rootProject.file("keystore.properties")
+def keystore = new Properties()
+if (keystoreFile.exists()) {
+    keystoreFile.withInputStream { keystore.load(it) }
+}
+
+android {
+    namespace "com.douda.pouliescourroies"
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "com.douda.pouliescourroies"
+        minSdk 23
+        targetSdk 36
+        versionCode((project.findProperty("versionCode") ?: "1").toString().toInteger())
+        versionName((project.findProperty("versionName") ?: "1.0.0").toString())
+        manifestPlaceholders = [hostName: webUri.host]
+        resValue "string", "launch_url", webAppUrl
+    }
+
+    signingConfigs {
+        release {
+            if (keystoreFile.exists()) {
+                storeFile rootProject.file(keystore.getProperty("storeFile"))
+                storePassword keystore.getProperty("storePassword")
+                keyAlias keystore.getProperty("keyAlias")
+                keyPassword keystore.getProperty("keyPassword")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            if (keystoreFile.exists()) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation "com.google.androidbrowserhelper:androidbrowserhelper:2.6.2"
+}

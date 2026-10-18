@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Android build output and secrets
+android/.gradle/
+android/build/
+android/app/build/
+android/dist/
+android/local.properties
+android/keystore.properties
+android/keystore/
+*.jks
+*.keystore
+*.aab
+*.apk

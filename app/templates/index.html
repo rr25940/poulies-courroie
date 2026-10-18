@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% from "_macros.html" import tr, step, num, inputs, centre %}
+{% block body %}
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="brand">
+      <span class="eyebrow" {{ tr("Transmission de puissance · Système poulies et courroies", "Power transmission · Pulley and belt drives") }}</span>
+      <h1 {{ tr("Simulateur poulies-courroies", "Pulley &amp; belt simulator") }}</h1>
+    </div>
+    <div class="appbar-ctl">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" id="tab-v" aria-controls="steps-v" data-act="mode" data-val="v" {{ tr("Courroies trapézoïdales", "V-belts") }}</button>
+        <button type="button" role="tab" id="tab-t" aria-controls="steps-t" data-act="mode" data-val="t" {{ tr("Courroies crantées", "Timing belts") }}</button>
+      </div>
+      <div class="seg" role="group" aria-label="Langue / Language">
+        <button type="button" data-act="lang" data-val="fr">FR</button>
+        <button type="button" data-act="lang" data-val="en">EN</button>
+      </div>
+      <button type="button" class="ghost" data-act="reset" {{ tr("Revenir à l'exemple", "Reset example") }}</button>
+    </div>
+  </div>
+  <div class="busy" id="busy" aria-hidden="true"></div>
+</header>
+
+<div class="wrap">
+<p class="lede" {{ tr("La démarche de calcul du cours, étape par étape. Changez une donnée ou un choix : le serveur refait le calcul et tout se met à jour, du dessin à l'échelle jusqu'au nombre de courroies.", "The course's sizing method, step by step. Change any input or choice: the server recomputes and everything updates, from the scale drawing to the number of belts.") }}</p>
+
+<main class="layout">
+<nav class="rail" aria-label="Étapes">
+  <ol class="rail-list" id="rail-v">
+    {% for n, fr, en in [(1,"Données","Inputs"),(2,"Facteur de service","Service factor"),(3,"Section","Section"),(4,"Diamètres","Diameters"),(5,"Entraxe et longueur","Centre &amp; length"),(6,"Puissance de base","Basic power"),(7,"Puissance admissible","Admissible power"),(8,"Nombre de courroies","Number of belts"),(9,"Efforts","Tensions")] %}
+    <li><a href="#v-s{{ n }}" data-rail="{{ n }}"><span class="rail-dot"></span><span class="rail-n">{{ n }}</span><span {{ tr(fr, en) }}</span></a></li>
+    {% endfor %}
+  </ol>
+  <ol class="rail-list" id="rail-t" hidden>
+    {% for n, fr, en in [(1,"Données","Inputs"),(2,"Facteur de service","Service factor"),(3,"Type","Type"),(4,"Nombre de dents","Tooth counts"),(5,"Entraxe et longueur","Centre &amp; length"),(6,"Puissance de base","Basic power"),(7,"Dents en prise","Teeth in mesh"),(8,"Largeur","Width")] %}
+    <li><a href="#t-s{{ n }}" data-rail="{{ n }}"><span class="rail-dot"></span><span class="rail-n">{{ n }}</span><span {{ tr(fr, en) }}</span></a></li>
+    {% endfor %}
+  </ol>
+</nav>
+
+<!-- ===================== COURROIES TRAPÉZOÏDALES ===================== -->
+<div class="steps" id="steps-v" role="tabpanel" aria-labelledby="tab-v">
+  {% call step('v', 1, "Données", "Input data", "P, N<sub>d</sub>, N<sub>D</sub>", "P, N<sub>d</sub>, N<sub>D</sub>") %}{{ inputs('v') }}{% endcall %}
+  {% call step('v', 2, "Facteur de service <i>K</i><sub>s</sub>", "Service factor <i>K</i><sub>s</sub>", "Tableau 1 · Fig22", "Table 1 · Fig22") %}
+    <div class="tbl" id="v-ks"></div><div id="v-o2" class="out"></div>
+  {% endcall %}
+  {% call step('v', 3, "Choix de la section", "Belt section", "Graphe 1 · Fig18", "Chart 1 · Fig18") %}
+    <figure class="fig"><div class="chart-box" id="v-g1"></div><figcaption {{ tr("Graphe 1 : gamme des puissances transmissibles par type de courroie. Le point rouge est votre couple (<i>P</i><sub>s</sub>, <i>N</i><sub>d</sub>).", "Chart 1: power range by belt section. The red dot is your (<i>P</i><sub>s</sub>, <i>N</i><sub>d</sub>) point.") }}</figcaption></figure>
+    <div class="ctl"><span class="lbl" {{ tr("Section", "Section") }}</span><div class="seg" id="v-sec"></div></div>
+    <div class="split"><div id="v-prof"></div><div id="v-o3" class="out grow"></div></div>
+  {% endcall %}
+  {% call step('v', 4, "Diamètres primitifs <i>d</i><sub>p</sub> et <i>D</i><sub>p</sub>", "Pitch diameters <i>d</i><sub>p</sub> and <i>D</i><sub>p</sub>", "Tableau 2 · Fig23", "Table 2 · Fig23") %}
+    <div class="pick"><span class="lbl" {{ tr("<i>d</i><sub>p</sub> petite poulie (mm)", "<i>d</i><sub>p</sub> small pulley (mm)") }}</span><div class="chips" id="v-dp"></div></div>
+    <div class="pick"><span class="lbl" {{ tr("<i>D</i><sub>p</sub> grande poulie (mm)", "<i>D</i><sub>p</sub> large pulley (mm)") }}</span><div class="chips" id="v-Dp"></div></div>
+    <div class="legend"><span><span class="dot"></span><span {{ tr("choix automatique", "automatic choice") }}</span></span><span {{ tr("Contour pointillé : hors du tableau 4 (<i>P</i><sub>b</sub> approchée)", "Dashed outline: outside table 4 (approximate <i>P</i><sub>b</sub>)") }}</span></div>
+    <div id="v-o4" class="out"></div>
+  {% endcall %}
+  {% call step('v', 5, "Entraxe et longueur primitive", "Centre distance and pitch length", "Tableau 3 · Fig24", "Table 3 · Fig24") %}
+    {{ centre('v', "Longueur normalisée <i>L</i><sub>p</sub> (mm, * NF ISO 4184)", "Standard length <i>L</i><sub>p</sub> (mm, * NF ISO 4184)") }}
+  {% endcall %}
+  {% call step('v', 6, "Puissance de base <i>P</i><sub>b</sub>", "Basic power rating <i>P</i><sub>b</sub>", "Tableau 4 · Fig25", "Table 4 · Fig25") %}
+    <div class="tbl" id="v-pb"></div><div id="v-o6" class="out"></div>
+  {% endcall %}
+  {% call step('v', 7, "Puissance admissible <i>P</i><sub>a</sub>", "Admissible power <i>P</i><sub>a</sub>", "Graphes 2 et 3 · Fig19–20", "Charts 2 and 3 · Fig19–20") %}
+    <div id="v-o7a" class="out"></div>
+    <div class="figs">
+      <figure class="fig"><div class="chart-box" id="v-g2"></div><figcaption {{ tr("Graphe 2 : <i>K</i><sub>θ</sub> selon l'angle d'enroulement", "Chart 2: <i>K</i><sub>θ</sub> versus wrap angle") }}</figcaption></figure>
+      <figure class="fig"><div class="chart-box" id="v-g3"></div><figcaption {{ tr("Graphe 3 : <i>K</i><sub>L</sub> selon la longueur primitive", "Chart 3: <i>K</i><sub>L</sub> versus pitch length") }}</figcaption></figure>
+    </div>
+    <div id="v-o7" class="out"></div>
+  {% endcall %}
+  {% call step('v', 8, "Nombre de courroies <i>n</i><sub>c</sub>", "Number of belts <i>n</i><sub>c</sub>", "Fin du calcul", "End of sizing") %}
+    <div id="v-o8" class="out"></div>
+  {% endcall %}
+  {% call step('v', 9, "Efforts dans les brins", "Belt tensions", "Étude générale", "General study") %}
+    <div class="fields">
+      {{ num('v-f', "Frottement <i>f</i>", "Friction <i>f</i>", '', 'inputmode="decimal" min="0.05" max="1" step="0.05"') }}
+      {{ num('v-beta', "Angle de gorge <i>β</i>", "Groove angle <i>β</i>", '°', 'inputmode="decimal" min="30" max="40" step="1"') }}
+      {{ num('v-k', "Rapport de pose <i>T</i>/<i>t</i>", "Tension ratio <i>T</i>/<i>t</i>", '', 'inputmode="decimal" min="1.5" max="10" step="0.5"') }}
+      {{ num('v-m', "Masse linéique <i>m′</i>", "Mass per length <i>m′</i>", 'kg/m', 'inputmode="decimal" min="0.01" step="0.01"') }}
+    </div>
+    <div class="forces" id="v-forces"></div>
+    <div id="v-o9" class="out"></div>
+  {% endcall %}
+</div>
+
+<!-- ===================== COURROIES CRANTÉES ===================== -->
+<div class="steps" id="steps-t" role="tabpanel" aria-labelledby="tab-t" hidden>
+  {% call step('t', 1, "Données", "Input data", "P, N<sub>d</sub>, N<sub>D</sub>", "P, N<sub>d</sub>, N<sub>D</sub>") %}{{ inputs('t') }}{% endcall %}
+  {% call step('t', 2, "Facteur de service <i>K</i><sub>s</sub>", "Service factor <i>K</i><sub>s</sub>", "Tableau 1 · Fig22", "Table 1 · Fig22") %}
+    <div class="tbl" id="t-ks"></div><div id="t-o2" class="out"></div>
+  {% endcall %}
+  {% call step('t', 3, "Type de courroie", "Belt type", "Graphe 4", "Chart 4") %}
+    <figure class="fig"><div class="chart-box" id="t-g4"></div><figcaption {{ tr("Graphe 4 : gammes des puissances transmissibles des courroies crantées.", "Chart 4: power ranges of timing belts.") }}</figcaption></figure>
+    <div class="ctl"><span class="lbl" {{ tr("Type", "Type") }}</span><div class="seg" id="t-type"></div></div>
+    <div id="t-o3" class="out"></div>
+  {% endcall %}
+  {% call step('t', 4, "Nombre de dents <i>Z</i><sub>d</sub> et <i>Z</i><sub>D</sub>", "Tooth counts <i>Z</i><sub>d</sub> and <i>Z</i><sub>D</sub>", "Tableau des dents", "Pulley teeth table") %}
+    <div class="ctl">
+      <label class="lbl" for="t-Zd" {{ tr("<i>Z</i><sub>d</sub> petite poulie", "<i>Z</i><sub>d</sub> small pulley") }}</label><select id="t-Zd"></select>
+      <label class="lbl" for="t-ZD" {{ tr("<i>Z</i><sub>D</sub> grande poulie", "<i>Z</i><sub>D</sub> large pulley") }}</label><select id="t-ZD"></select>
+    </div>
+    <div id="t-o4" class="out"></div>
+  {% endcall %}
+  {% call step('t', 5, "Entraxe et longueur", "Centre distance and length", "NF ISO 5294 / 5296", "NF ISO 5294 / 5296") %}
+    {{ centre('t', "Nombre de dents de la courroie <i>Z</i><sub>c</sub>", "Belt tooth count <i>Z</i><sub>c</sub>") }}
+  {% endcall %}
+  {% call step('t', 6, "Puissance de base <i>P</i><sub>0</sub>", "Basic power <i>P</i><sub>0</sub>", "Graphe 5", "Chart 5") %}
+    <figure class="fig"><div class="chart-box" id="t-g5"></div><figcaption {{ tr("Graphe 5 : puissance de base des courroies crantées en fonction de la vitesse.", "Chart 5: basic power of timing belts versus belt speed.") }}</figcaption></figure>
+    <div id="t-o6" class="out"></div>
+  {% endcall %}
+  {% call step('t', 7, "Dents en prise <i>Z</i><sub>pr</sub> et <i>K</i><sub>z</sub>", "Teeth in mesh <i>Z</i><sub>pr</sub> and <i>K</i><sub>z</sub>", "Fig32", "Fig32") %}
+    <div id="t-o7" class="out"></div><div class="tbl" id="t-kz"></div>
+  {% endcall %}
+  {% call step('t', 8, "Largeur de courroie et <i>K</i><sub>b</sub>", "Belt width and <i>K</i><sub>b</sub>", "Fig32 · fin du calcul", "Fig32 · end of sizing") %}
+    <div class="pick"><span class="lbl" {{ tr("Largeur <i>b</i> (mm)", "Width <i>b</i> (mm)") }}</span><div class="chips" id="t-w"></div></div>
+    <div id="t-o8" class="out"></div>
+  {% endcall %}
+</div>
+
+<aside class="bench" aria-live="polite">
+  <div class="bench-card">
+    <div class="bench-head">
+      <span class="eyebrow" {{ tr("Transmission · dessin à l'échelle", "Drive · drawn to scale") }}</span>
+      <div class="bench-ctl">
+        <div class="seg sm" id="speed" role="group" aria-label="Vitesse d'animation">
+          <button type="button" data-act="speed" data-val="0.25">¼×</button>
+          <button type="button" data-act="speed" data-val="1">1×</button>
+          <button type="button" data-act="speed" data-val="3">3×</button>
+        </div>
+        <button type="button" class="ghost icon" id="play" data-act="play"></button>
+      </div>
+    </div>
+    <svg id="drive" class="drive" viewBox="0 0 640 360" role="img" aria-label="Transmission"></svg>
+    <div class="result" id="result"></div>
+  </div>
+</aside>
+</main>
+
+<footer class="foot" {{ tr("Tableaux et courbes relevés sur le cours « Système poulies et courroies » (Fig18 à Fig32, NF ISO 4183, 4184, 5294, 5296). La lecture des graphes est précise à quelques % près, comme une lecture à la main. Deux cases floues du tableau 4 ont été lues par cohérence avec leurs voisines : 3,59 kW (A, 100 mm, 20 m/s) et 9,85 kW (B, 250 mm, 25 m/s). La masse linéique <i>m′</i> proposée est une valeur catalogue typique, absente du cours.", "Tables and curves are read from the course “Système poulies et courroies” (Fig18 to Fig32, NF ISO 4183, 4184, 5294, 5296). Chart readings are accurate to a few percent, like reading them by hand. Two blurry cells in table 4 were read to match their neighbours: 3.59 kW (A, 100 mm, 20 m/s) and 9.85 kW (B, 250 mm, 25 m/s). The suggested mass per length <i>m′</i> is a typical catalogue value; the course does not give one.") }}</footer>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script id="belt-data" type="application/json">{{ data|tojson }}</script>
+<script id="belt-defaults" type="application/json">{{ defaults|tojson }}</script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/drive.js') }}"></script>
+<script src="{{ url_for('static', filename='js/steps.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

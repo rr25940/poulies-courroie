@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Confidentialité · Poulies-courroies{% endblock %}
+{% block body %}
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="brand">
+      <span class="eyebrow">Poulies-courroies</span>
+      <h1>Politique de confidentialité</h1>
+    </div>
+    <a class="ghost" href="{{ url_for('main.index') }}">← Simulateur</a>
+  </div>
+</header>
+<main class="wrap doc">
+  <p class="doc-date">Dernière mise à jour : 18 octobre 2026 · Last updated: 18 October 2026</p>
+
+  <section lang="fr">
+    <h2>En bref</h2>
+    <p>Poulies-courroies est un simulateur de calcul de transmissions par courroies. Il ne demande aucun compte, n’affiche aucune publicité et n’utilise aucun outil de mesure d’audience. Nous ne collectons et ne conservons aucune donnée personnelle.</p>
+    <h2>Données de calcul</h2>
+    <p>Les valeurs que vous saisissez (puissance, vitesses, choix de poulies…) sont envoyées à notre serveur uniquement pour effectuer le calcul, puis la réponse vous est renvoyée. Elles ne sont ni enregistrées ni associées à votre identité. Le serveur ne tient pas de journal des visites.</p>
+    <h2>Stockage sur votre appareil</h2>
+    <p>Vos dernières valeurs et la langue choisie sont gardées dans le stockage local de votre navigateur, sur votre appareil, pour les retrouver à la prochaine ouverture. Elles ne quittent pas votre appareil. Vous pouvez les effacer en vidant les données du site ou de l’application.</p>
+    <h2>Services tiers</h2>
+    <p>Les polices de caractères sont chargées depuis Google Fonts : votre appareil contacte alors les serveurs de Google, qui reçoivent son adresse IP. Notre hébergeur peut conserver des journaux techniques pour la sécurité de son infrastructure, selon sa propre politique.</p>
+    <h2>Enfants</h2>
+    <p>L’application est un outil pédagogique destiné aux étudiants et aux techniciens. Elle ne s’adresse pas aux enfants de moins de 13 ans.</p>
+    <h2>Contact</h2>
+    <p>Pour toute question, écrivez à l’adresse de contact du développeur indiquée sur la fiche Google Play de l’application.</p>
+  </section>
+
+  <section lang="en">
+    <h2>In short</h2>
+    <p>Poulies-courroies is a belt-drive sizing simulator. It needs no account, shows no ads and uses no analytics. We do not collect or keep any personal data.</p>
+    <h2>Calculation data</h2>
+    <p>The values you enter (power, speeds, pulley choices…) are sent to our server only to run the calculation, and the result is sent back to you. They are not stored or linked to you. The server keeps no visit logs.</p>
+    <h2>Storage on your device</h2>
+    <p>Your last values and chosen language are kept in your browser’s local storage, on your device, so they are there next time. They never leave your device. You can erase them by clearing the site’s or the app’s data.</p>
+    <h2>Third-party services</h2>
+    <p>Fonts are loaded from Google Fonts, so your device contacts Google’s servers, which receive its IP address. Our hosting provider may keep technical logs to protect its infrastructure, under its own policy.</p>
+    <h2>Children</h2>
+    <p>The app is a learning tool for students and technicians. It is not directed at children under 13.</p>
+    <h2>Contact</h2>
+    <p>For any question, write to the developer contact address shown on the app’s Google Play listing.</p>
+  </section>
+</main>
+{% endblock %}

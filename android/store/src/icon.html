@@ -1,0 +1,24 @@
+<!doctype html>
+<!-- App icon. ?v=any (rounded, web), ?v=play (full-bleed square for Google Play), ?v=maskable (content inside the 80 % safe zone). -->
+<meta charset="utf-8">
+<style>html,body{margin:0;width:100vw;height:100vh;overflow:hidden;background:transparent}svg{display:block;width:100vw;height:100vh}</style>
+<svg id="i" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <rect id="bg" width="64" height="64" fill="#16201D"/>
+  <g id="g">
+    <path d="M20 15 L46 23 M20 49 L46 41" stroke="#B5381D" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="20" cy="32" r="17" fill="none" stroke="#ECF0EE" stroke-width="5"/>
+    <circle cx="46" cy="32" r="9" fill="none" stroke="#ECF0EE" stroke-width="5"/>
+    <g stroke="#ECF0EE" stroke-width="2" stroke-linecap="round" opacity=".55">
+      <path d="M20 32 L20 18 M20 32 L32.1 39 M20 32 L7.9 39"/>
+    </g>
+    <circle cx="20" cy="32" r="4" fill="#F2C94C"/>
+    <circle cx="46" cy="32" r="2.5" fill="#F2C94C"/>
+  </g>
+</svg>
+<script>
+  const v = new URLSearchParams(location.search).get('v') || 'any';
+  const s = { any: 0.9, play: 0.82, maskable: 0.72 }[v];
+  // content bounding box centre is (29, 32); scale it around the icon centre (32, 32)
+  document.getElementById('g').setAttribute('transform', `translate(32 32) scale(${s}) translate(-29 -32)`);
+  if (v === 'any') document.getElementById('bg').setAttribute('rx', '12');
+</script>

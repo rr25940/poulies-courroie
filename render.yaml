@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: poulies-courroies
+    runtime: docker
+    # "free" sleeps after 15 minutes without visits; the next visitor then waits about a minute.
+    # For a Play Store app, "starter" (always on, paid) gives a much better first launch.
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /healthz
+    envVars:
+      - key: WEB_CONCURRENCY
+        value: "2"
+      - key: THREADS
+        value: "4"
+      - key: ANDROID_PACKAGE_NAME
+        value: com.douda.pouliescourroies
+      # Set in the Render dashboard after the first upload to Play Console:
+      # "<Play app-signing SHA-256>,<upload key SHA-256>"
+      - key: ANDROID_SHA256_CERT_FINGERPRINT
+        sync: false
