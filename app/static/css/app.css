@@ -84,7 +84,6 @@ h1{margin:0;font-family:var(--f-display);font-stretch:72%;font-weight:780;font-s
 .busy::after{content:"";position:absolute;inset:0;width:30%;background:var(--accent);transform:translateX(-110%);opacity:0}
 .busy.on::after{opacity:1;animation:busy 1s var(--ease) infinite}
 @keyframes busy{from{transform:translateX(-110%)}to{transform:translateX(360%)}}
-.lede{margin:0 0 16px;max-width:75ch;color:var(--ink-2);font-size:14.5px}
 /* phones: the two belt tabs share the full width instead of pushing the page wider than the screen */
 @media (max-width:560px){
   :root{--bar-h:96px}
@@ -96,7 +95,6 @@ h1{margin:0;font-family:var(--f-display);font-stretch:72%;font-weight:780;font-s
   .appbar [data-act="reset"]{font-size:0;padding:5px 10px}
   .appbar [data-act="reset"]::before{content:"↺";font-size:17px;line-height:1}
   h1{font-size:21px}
-  .lede{font-size:14px}
 }
 
 /* ---------- controls ---------- */
