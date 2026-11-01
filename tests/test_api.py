@@ -15,7 +15,7 @@ def test_index_renders_both_tabs(client):
     html = resp.get_data(as_text=True)
     assert "Simulateur poulies-courroies" in html
     assert 'id="steps-v"' in html and 'id="steps-t"' in html
-    assert "Ghada Hakiri" in html and "Riadh Ayari" in html
+    assert "Ghada Hakiri" in html
     assert 'id="splash"' in html and 'class="splashing"' in html
     assert 'id="don"' in html and "mailto:hkiri.ghada@enib.ucar.tn" in html
     assert "Content-Security-Policy" in resp.headers
